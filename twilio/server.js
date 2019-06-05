@@ -1,14 +1,19 @@
 // create a server that can handle incoming messages:
 
-var http = require ('http');
-var express = require ('express');
-var twilio = require ('twilio');
+// ngrok:
+//Authtoken saved to configuration file: /Users/Merle/.ngrok2/ngrok.yml
+// sudo cp ngrok /usr/local/bin
 
-var app = express ();
+// Kasuta const-i siin, siis ei saa keegi muutujaid üle sodida.
+const http = require ('http');
+const express = require ('express');
+const twilio = require ('twilio');
+
+const app = express ();
 
 app.post ('/sms', function (req, res) {
-  var twilio = require ('twilio');
-  var twiml = new twilio.TwimlResponse ();
+  // Error on, et TwimlResponse is not a constructor. Let me see
+  const twiml = new twilio.twiml.MessagingResponse ();
   twiml.message ('The Robots are coming! Head for the hills!');
   res.writeHead (200, {'Content-Type': 'text/xml'});
   res.end (twiml.toString ());
