@@ -84,6 +84,7 @@ const authRoutes = require ('./routes/auth');
 app.use ('/auth', authRoutes);
 
 // viskab errori :throw new TypeError('Router.use() requires a middleware function but got a ' + gettype(fn))
+
 // const remindersRoutes = require ('./routes/reminders');
 // app.use ('/reminders', remindersRoutes);
 
