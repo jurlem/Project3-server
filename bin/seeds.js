@@ -22,11 +22,11 @@ mongoose
 
 let users = [
   {
-    username: 'alice',
+    email_address: 'alice',
     password: bcrypt.hashSync ('alice', bcrypt.genSaltSync (bcryptSalt)),
   },
   {
-    username: 'bob',
+    email_address: 'bob',
     password: bcrypt.hashSync ('bob', bcrypt.genSaltSync (bcryptSalt)),
   },
 ];

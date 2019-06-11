@@ -11,33 +11,36 @@ router.get ('/login', (req, res, next) => {
   res.render ('auth/login', {message: req.flash ('error')});
 });
 
-// router.post("/login", passport.authenticate("local", {
-//   successRedirect: "/",
-//   failureRedirect: "/auth/login",
-//   failureFlash: true,
-//   passReqToCallback: true
-// }));
+// router.post (
+//   '/login',
+//   passport.authenticate ('local', {
+//     successRedirect: '/',
+//     failureRedirect: '/auth/login',
+//     failureFlash: true,
+//     passReqToCallback: true,
+//   })
+// );
 
 router.post ('/login', (req, res, next) => {
   console.log ('login rout is hit');
-  // passport.authenticate ('local', (err, theUser, info) => {
-  //   if (err) {
-  //     res.status (500).json ({message: err});
-  //     return;
-  //   }
-  //   if (!theUser) {
-  //     res.status (401).json (info);
-  //     return;
-  //   }
+  passport.authenticate ('local', (err, theUser, info) => {
+    if (err) {
+      res.status (500).json ({message: err});
+      return;
+    }
+    if (!theUser) {
+      res.status (401).json (info);
+      return;
+    }
 
-  //   req.login (theUser, err => {
-  //     if (err) {
-  //       res.status (500).json ({message: err});
-  //       return;
-  //     }
-  //     res.status (200).json (theUser);
-  //   });
-  // }) (req, res, next);
+    req.login (theUser, err => {
+      if (err) {
+        res.status (500).json ({message: err});
+        return;
+      }
+      res.status (200).json (theUser);
+    });
+  }) (req, res, next);
 });
 
 router.get ('/signup', (req, res, next) => {
@@ -45,18 +48,30 @@ router.get ('/signup', (req, res, next) => {
 });
 
 router.post ('/signup', (req, res, next) => {
-  const username = req.body.username;
+  const first_name = req.body.first_name;
+  const email_address = req.body.email_address;
   const password = req.body.password;
-  if (username === '' || password === '') {
-    res.status (400).json ({message: "Username or password can't be empty"});
-    //  res.render ('auth/signup', {message: 'Indicate username and password'});
+  const phone_number = req.body.phone_number;
+  const premium = req.body.premium;
+  console.log ('signup rout is hit', req.body);
+
+  if (email_address === '' || password === '' || phone_number === '') {
+    res.status (400).json ({
+      message: "email_address, password or phone number can't be empty",
+    });
+    //  res.render ('auth/signup', {message: 'Indicate email_address and password'});
     return;
   }
 
-  User.findOne ({username}, 'username', (err, user) => {
+  User.findOne ({email_address}, 'email_address', (err, user) => {
+    console.log (
+      'signup rout is hit, this is the email address: ',
+      email_address
+    );
+
     if (user !== null) {
-      res.status (400).json ({message: 'The username already exists'});
-      //res.render ('auth/signup', {message: 'The username already exists'});
+      res.status (400).json ({message: 'The email_address already exists'});
+      //res.render ('auth/signup', {message: 'The email_address already exists'});
       return;
     }
 
@@ -64,8 +79,11 @@ router.post ('/signup', (req, res, next) => {
     const hashPass = bcrypt.hashSync (password, salt);
 
     const newUser = new User ({
-      username,
+      first_name,
+      email_address,
       password: hashPass,
+      phone_number,
+      premium,
     });
 
     newUser

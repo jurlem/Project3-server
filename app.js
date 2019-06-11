@@ -8,6 +8,7 @@ const hbs = require ('hbs');
 const mongoose = require ('mongoose');
 const logger = require ('morgan');
 const path = require ('path');
+const cors = require ('cors');
 
 const session = require ('express-session');
 const MongoStore = require ('connect-mongo') (session);
@@ -77,15 +78,24 @@ app.use (
 app.use (flash ());
 require ('./passport') (app);
 
+// cors
+app.use (
+  cors ({
+    origin: ['http://localhost:3000'],
+    credentials: true,
+  })
+);
+
 const index = require ('./routes/index');
 app.use ('/', index);
 
 const authRoutes = require ('./routes/auth');
 app.use ('/auth', authRoutes);
 
-// viskab errori :throw new TypeError('Router.use() requires a middleware function but got a ' + gettype(fn))
+const remindersRoutes = require ('./routes/reminders');
+app.use ('/reminders', remindersRoutes);
 
-// const remindersRoutes = require ('./routes/reminders');
-// app.use ('/reminders', remindersRoutes);
+const manageRoutes = require ('./routes/manage');
+app.use ('/manage', manageRoutes);
 
 module.exports = app;

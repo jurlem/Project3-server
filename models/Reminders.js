@@ -11,11 +11,13 @@ const Twilio = require ('twilio');
 
 const remindersSchema = new Schema (
   {
-    time: Date,
-    reminderTime: String,
+    date: String,
+    time: String,
+    remindMe: String,
     notification: Number, //
     timeZone: String,
     text: String,
+    gridRadios: String,
     userId: {type: Schema.Types.ObjectId, ref: 'User'}, // is it necessary here also  ?
   },
   {

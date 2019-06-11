@@ -3,12 +3,12 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema (
   {
-    username: String,
-    email: String,
-    phoneNumber: String,
+    first_name: String,
+    email_address: String,
+    phone_number: String,
     password: String,
     premium: Boolean,
-    notification: {type: String, enum: ['MAIL', 'SMS'], default: 'MAIL'},
+    notification: {type: String, enum: ['MAIL', 'SMS']},
     // remindersId: {type: Schema.Types.ObjectId, ref: 'Reminders'},
   },
   {
