@@ -9,6 +9,7 @@ const userSchema = new Schema (
     password: String,
     premium: Boolean,
     notification: {type: String, enum: ['MAIL', 'SMS']},
+    typeOfUser: {type: String, enum: ['ADMIN', 'USER'], default: 'USER'},
     // remindersId: {type: Schema.Types.ObjectId, ref: 'Reminders'},
   },
   {

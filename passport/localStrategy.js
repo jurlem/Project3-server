@@ -6,7 +6,7 @@ const bcrypt = require ('bcrypt');
 passport.use (
   new LocalStrategy (
     {
-      email_addressField: 'email_address',
+      usernameField: 'email_address',
       passwordField: 'password',
     },
     (email_address, password, done) => {

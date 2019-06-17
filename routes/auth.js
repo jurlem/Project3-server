@@ -22,7 +22,6 @@ router.get ('/login', (req, res, next) => {
 // );
 
 router.post ('/login', (req, res, next) => {
-  console.log ('login rout is hit');
   passport.authenticate ('local', (err, theUser, info) => {
     if (err) {
       res.status (500).json ({message: err});
@@ -53,11 +52,17 @@ router.post ('/signup', (req, res, next) => {
   const password = req.body.password;
   const phone_number = req.body.phone_number;
   const premium = req.body.premium;
-  console.log ('signup rout is hit', req.body);
+  const typeOfUser = req.body.typeOfUser;
+  console.log ('signup route is hit', req.body);
 
-  if (email_address === '' || password === '' || phone_number === '') {
+  if (
+    email_address === '' ||
+    password === '' ||
+    phone_number === '' ||
+    first_name === ''
+  ) {
     res.status (400).json ({
-      message: "email_address, password or phone number can't be empty",
+      message: "email address, password or phone number can't be empty",
     });
     //  res.render ('auth/signup', {message: 'Indicate email_address and password'});
     return;
@@ -70,7 +75,7 @@ router.post ('/signup', (req, res, next) => {
     );
 
     if (user !== null) {
-      res.status (400).json ({message: 'The email_address already exists'});
+      res.status (400).json ({message: 'The email address already exists'});
       //res.render ('auth/signup', {message: 'The email_address already exists'});
       return;
     }
@@ -84,12 +89,14 @@ router.post ('/signup', (req, res, next) => {
       password: hashPass,
       phone_number,
       premium,
+      typeOfUser,
     });
 
     newUser
       .save ()
       .then (() => {
         res.status (200).json (newUser);
+        console.log (newUser);
         //res.redirect ('/');
       })
       .catch (err => {

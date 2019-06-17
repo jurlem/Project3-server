@@ -89,6 +89,9 @@ app.use (
 const index = require ('./routes/index');
 app.use ('/', index);
 
+const usersRoutes = require ('./routes/users');
+app.use ('/users', usersRoutes);
+
 const authRoutes = require ('./routes/auth');
 app.use ('/auth', authRoutes);
 
