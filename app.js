@@ -4,7 +4,6 @@ const bodyParser = require ('body-parser');
 const cookieParser = require ('cookie-parser');
 const express = require ('express');
 const favicon = require ('serve-favicon');
-const hbs = require ('hbs');
 const mongoose = require ('mongoose');
 const logger = require ('morgan');
 const path = require ('path');
@@ -13,6 +12,9 @@ const cors = require ('cors');
 const session = require ('express-session');
 const MongoStore = require ('connect-mongo') (session);
 const flash = require ('connect-flash');
+
+// import passport docs from config folder
+const passportSetup = require ('./passport/serializers');
 
 mongoose
   .connect ('mongodb://localhost/remindertool', {useNewUrlParser: true})
@@ -53,28 +55,24 @@ app.set ('view engine', 'hbs');
 app.use (express.static (path.join (__dirname, 'public')));
 app.use (favicon (path.join (__dirname, 'public', 'images', 'favicon.ico')));
 
-hbs.registerHelper ('ifUndefined', (value, options) => {
-  if (arguments.length < 2)
-    throw new Error ('Handlebars Helper ifUndefined needs 1 parameter');
-  if (typeof value !== undefined) {
-    return options.inverse (this);
-  } else {
-    return options.fn (this);
-  }
-});
-
 // default value for title local
 app.locals.title = 'Express - Generated with IronGenerator';
 
 // Enable authentication using session + passport
 app.use (
   session ({
-    secret: 'irongenerator',
+    secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
-    store: new MongoStore ({mongooseConnection: mongoose.connection}),
+    cookie: {maxAge: 60 * 60000},
+    store: new MongoStore ({
+      mongooseConnection: mongoose.connection,
+      ttl: 1 * 60 * 60,
+    }),
   })
 );
+passportSetup (app);
+
 app.use (flash ());
 require ('./passport') (app);
 

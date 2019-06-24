@@ -10,6 +10,7 @@ const userSchema = new Schema (
     premium: Boolean,
     notification: {type: String, enum: ['MAIL', 'SMS']},
     typeOfUser: {type: String, enum: ['ADMIN', 'USER'], default: 'USER'},
+    selectedDay: Date,
     // remindersId: {type: Schema.Types.ObjectId, ref: 'Reminders'},
   },
   {

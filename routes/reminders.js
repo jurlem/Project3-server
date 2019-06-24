@@ -1,6 +1,7 @@
 const express = require ('express');
 const router = express.Router ();
 const Reminders = require ('../models/Reminders');
+const moment = require ('moment');
 
 // router.get ('/', (req, res) => {
 //   console.log ('the test route is /REMINDERS/ !');
@@ -19,11 +20,35 @@ router.post ('/create', (req, res, next) => {
 
 // GET reminders from the DB for REMINDER view: //userId: req.query.id, date: new Date ()
 router.get ('/get', (req, res, next) => {
-  console.log ('LOGGING: just /get route');
-  Reminders.find ({})
+  // console.log ('LOGGING: req /get route', req.query.id);
+  Reminders.find ({
+    $and: [
+      {userId: req.query.id},
+      // {date: {$gte: today.toDate ()}} ERROR - today is not defined
+    ],
+  })
+    .sort ({date: 1})
     .then (receivedInfo => {
       console.log (receivedInfo);
       res.json (receivedInfo); // ???
+    })
+    .catch (err => {
+      console.log (err);
+    });
+});
+
+//GET SELECTED DAY reminders per user:
+router.get ('/selectedday', (req, res, next) => {
+  console.log ('LOGGING: req /selectedday req.query', req.query);
+
+  Reminders.find ({
+    $and: [{userId: req.query.id}, {date: req.query.date}],
+    // {userId: req.query.id},
+  })
+    .sort ({date: 1})
+    .then (receivedInfo => {
+      console.log ('logging /selectedday:', receivedInfo);
+      res.json (receivedInfo);
     })
     .catch (err => {
       console.log (err);

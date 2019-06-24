@@ -6,6 +6,7 @@ const User = require ('../models/User');
 // manage
 router.get ('/', (req, res, next) => {
   User.find ({})
+    .sort ({first_name: 1})
     .then (all => {
       console.log (all);
       res.json (all);

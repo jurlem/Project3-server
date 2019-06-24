@@ -7,9 +7,64 @@ const User = require ('../models/User');
 const bcrypt = require ('bcrypt');
 const bcryptSalt = 10;
 
-router.get ('/login', (req, res, next) => {
-  res.render ('auth/login', {message: req.flash ('error')});
+// signup
+// router.get ('/signup', (req, res, next) => {
+//   res.render ('auth/signup');
+// });
+
+router.post ('/signup', (req, res, next) => {
+  const {
+    first_name,
+    email_address,
+    password,
+    phone_number,
+    premium,
+    typeOfUser,
+  } = req.body;
+
+  if (
+    email_address === '' ||
+    password === '' ||
+    phone_number === '' ||
+    first_name === ''
+  ) {
+    res.status (400).json ({
+      message: "email address, password or phone number can't be empty",
+    });
+    return;
+  }
+
+  User.findOne ({email_address})
+    .then (foundEmail_address => {
+      if (foundEmail_address !== null) {
+        res.status (400).json ({message: 'The email address already exists'});
+        return;
+      }
+      const salt = bcrypt.genSaltSync (bcryptSalt);
+      const hashPass = bcrypt.hashSync (password, salt);
+
+      User.create ({
+        first_name,
+        email_address,
+        password: hashPass,
+        phone_number,
+        premium,
+        typeOfUser,
+      })
+        .then (newUser => {
+          console.log (newUser);
+          // login user afrer successful signup automatically
+          req.login (newUser, () => {
+            newUser.hashPass = undefined;
+            res.json ({newUser});
+          });
+        })
+        .catch (err => next (err));
+    })
+    .catch (err => next (err));
 });
+
+// login
 
 // router.post (
 //   '/login',
@@ -38,77 +93,25 @@ router.post ('/login', (req, res, next) => {
         return;
       }
       res.status (200).json (theUser);
+      //JSON.stringify
     });
   }) (req, res, next);
 });
 
-router.get ('/signup', (req, res, next) => {
-  res.render ('auth/signup');
-});
-
-router.post ('/signup', (req, res, next) => {
-  const first_name = req.body.first_name;
-  const email_address = req.body.email_address;
-  const password = req.body.password;
-  const phone_number = req.body.phone_number;
-  const premium = req.body.premium;
-  const typeOfUser = req.body.typeOfUser;
-  console.log ('signup route is hit', req.body);
-
-  if (
-    email_address === '' ||
-    password === '' ||
-    phone_number === '' ||
-    first_name === ''
-  ) {
-    res.status (400).json ({
-      message: "email address, password or phone number can't be empty",
-    });
-    //  res.render ('auth/signup', {message: 'Indicate email_address and password'});
-    return;
-  }
-
-  User.findOne ({email_address}, 'email_address', (err, user) => {
-    console.log (
-      'signup rout is hit, this is the email address: ',
-      email_address
-    );
-
-    if (user !== null) {
-      res.status (400).json ({message: 'The email address already exists'});
-      //res.render ('auth/signup', {message: 'The email_address already exists'});
-      return;
-    }
-
-    const salt = bcrypt.genSaltSync (bcryptSalt);
-    const hashPass = bcrypt.hashSync (password, salt);
-
-    const newUser = new User ({
-      first_name,
-      email_address,
-      password: hashPass,
-      phone_number,
-      premium,
-      typeOfUser,
-    });
-
-    newUser
-      .save ()
-      .then (() => {
-        res.status (200).json (newUser);
-        console.log (newUser);
-        //res.redirect ('/');
-      })
-      .catch (err => {
-        res.status (500).json ({message: 'Something went wrong'});
-        //res.render ('auth/signup', {message: 'Something went wrong'});
-      });
-  });
-});
-
 router.get ('/logout', (req, res) => {
   req.logout ();
-  res.status (200).json ({message: 'User logged out successfully'});
+  //send an empty theUser on logout, removing user from session
+  res.status (200).json ({theUser: null});
+});
+
+router.get ('/checkuser', (req, res, next) => {
+  if (req.user) {
+    // hide "hashPass" before sending the JSON (it's a security risk)
+    req.user.hashPass = undefined;
+    res.json ({theUser: req.user});
+  } else {
+    res.json ({theUser: null});
+  }
 });
 
 router.get ('/currentuser', (req, res, next) => {
