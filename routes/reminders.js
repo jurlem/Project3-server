@@ -2,6 +2,7 @@ const express = require ('express');
 const router = express.Router ();
 const Reminders = require ('../models/Reminders');
 const moment = require ('moment');
+moment ().format ();
 
 // router.get ('/', (req, res) => {
 //   console.log ('the test route is /REMINDERS/ !');
@@ -18,7 +19,7 @@ router.post ('/create', (req, res, next) => {
     });
 });
 
-// GET reminders from the DB for REMINDER view: //userId: req.query.id, date: new Date ()
+// GET reminders from the DB for REMINDER view STARTING from today: //userId: req.query.id, date: new Date ()
 router.get ('/get', (req, res, next) => {
   // console.log ('LOGGING: req /get route', req.query.id);
   Reminders.find ({
@@ -37,15 +38,47 @@ router.get ('/get', (req, res, next) => {
     });
 });
 
+//
+router.get ('/statistics', (req, res, next) => {
+  // console.log ('LOGGING: req /statistics route', req.query);
+  Reminders.count ({userId: req.query.userId})
+    .then (remindersCount => {
+      res.json (remindersCount);
+    })
+    .catch (err => {
+      console.log (err);
+    });
+});
+
+//GET SELECTED DAY reminders per user:
+// router.get ('/selectedday', (req, res, next) => {
+//   console.log ('LOGGING: req /selectedday req.query', req.query);
+//   debugger;
+//   Reminders.find ({
+//     $and: [{userId: req.query.id}, {date: req.query.date}],
+//     // {userId: req.query.id},
+//   })
+//     .sort ({date: 1})
+//     .then (receivedInfo => {
+//       console.log ('logging /selectedday:', receivedInfo);
+//       res.json (receivedInfo);
+//     })
+//     .catch (err => {
+//       console.log (err);
+//     });
+// });
+
 //GET SELECTED DAY reminders per user:
 router.get ('/selectedday', (req, res, next) => {
-  console.log ('LOGGING: req /selectedday req.query', req.query);
+  console.log ('LOGGING: req /selectedday req.query', req.body);
+
+  let date = new Date (req.body.date);
+  // req.body.date.moment ().format ('Do MMM YYYY');
+  // new Date("2016-05-18T16:00:00Z")
 
   Reminders.find ({
-    $and: [{userId: req.query.id}, {date: req.query.date}],
-    // {userId: req.query.id},
+    $and: [{userId: req.body.id}, {date: date}],
   })
-    .sort ({date: 1})
     .then (receivedInfo => {
       console.log ('logging /selectedday:', receivedInfo);
       res.json (receivedInfo);

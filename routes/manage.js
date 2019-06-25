@@ -16,4 +16,16 @@ router.get ('/', (req, res, next) => {
     });
 });
 
+// Upgrade to Premium: premium = true
+router.get ('/upgrade', (req, res, next) => {
+  User.updateOne ({_id: req.query.id}, {$set: {premium: true}})
+    .then (all => {
+      console.log (all);
+      res.json (all);
+    })
+    .catch (err => {
+      console.log (err);
+    });
+});
+
 module.exports = router;
