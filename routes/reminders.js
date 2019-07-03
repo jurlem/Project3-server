@@ -2,17 +2,13 @@ const express = require ('express');
 const router = express.Router ();
 const Reminders = require ('../models/Reminders');
 const moment = require ('moment');
-moment ().format ();
-
-// router.get ('/', (req, res) => {
-//   console.log ('the test route is /REMINDERS/ !');
-// });
 
 //  create new reminder:
 router.post ('/create', (req, res, next) => {
   Reminders.create (req.body)
     .then (insertedInfo => {
-      console.log ('testing CREATE path ' + insertedInfo); //kirjutab DB
+      console.log ('logging CREATE path ' + insertedInfo);
+      res.json (insertedInfo);
     })
     .catch (err => {
       console.log (err);
@@ -51,29 +47,10 @@ router.get ('/statistics', (req, res, next) => {
 });
 
 //GET SELECTED DAY reminders per user:
-// router.get ('/selectedday', (req, res, next) => {
-//   console.log ('LOGGING: req /selectedday req.query', req.query);
-//   debugger;
-//   Reminders.find ({
-//     $and: [{userId: req.query.id}, {date: req.query.date}],
-//     // {userId: req.query.id},
-//   })
-//     .sort ({date: 1})
-//     .then (receivedInfo => {
-//       console.log ('logging /selectedday:', receivedInfo);
-//       res.json (receivedInfo);
-//     })
-//     .catch (err => {
-//       console.log (err);
-//     });
-// });
-
-//GET SELECTED DAY reminders per user:
 router.get ('/selectedday', (req, res, next) => {
   console.log ('LOGGING: req /selectedday req.query', req.body);
 
   let date = new Date (req.body.date);
-  // req.body.date.moment ().format ('Do MMM YYYY');
   // new Date("2016-05-18T16:00:00Z")
 
   Reminders.find ({
@@ -96,6 +73,34 @@ router.get ('/delete', (req, res) => {
     .then (deletedData => {
       console.log ('Im deleting this: ', deletedData);
       res.send ({message: `succesfully deleted ${deletedData}`});
+    })
+    .catch (err => {
+      console.log (err);
+    });
+});
+
+// EDIT
+// Users is updating reminder details:
+router.post ('/remindersedit', (req, res, next) => {
+  const {first_name, email_address, password, phone_number} = req.body;
+  console.log ('LOGGING:router.profileedit route', req.body);
+  Reminders.findOneAndUpdate (
+    {_id: req.body._id},
+    {
+      $set: {
+        id: req.body.id,
+        date: req.body.date,
+        remindMe: req.body.remindMe,
+        text: req.body.text,
+        gridRadios: req.body.gridRadios,
+        userId: req.body.userId,
+      },
+    }
+    // {new: true}
+  )
+    .then (receivedInfo => {
+      console.log ('Console logging profileedit', receivedInfo);
+      res.json (receivedInfo);
     })
     .catch (err => {
       console.log (err);

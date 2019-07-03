@@ -11,7 +11,8 @@ const Twilio = require ('twilio');
 
 const remindersSchema = new Schema (
   {
-    date: Date,
+    //date: Date,
+    date: {type: Date, index: true},
     time: String,
     remindMe: String,
     notification: Number, //
