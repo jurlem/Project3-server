@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
+    "heroku-postbuild": "node bin/seeds.js",
     "dev": "DEBUG=profile:* nodemon --inspect ./bin/www",
     "dev-windows": "nodemon ./bin/www"
   },
