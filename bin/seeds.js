@@ -10,7 +10,7 @@ const User = require ('../models/User');
 const bcryptSalt = 10;
 
 mongoose
-  .connect (process.env.remindertool_db, {useNewUrlParser: true})
+  .connect (process.env.MONGO_URI, {useNewUrlParser: true})
   // .connect ('mongodb://localhost/remindertool', {useNewUrlParser: true})
   // remindertool_db
   .then (x => {

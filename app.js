@@ -17,7 +17,7 @@ const flash = require ('connect-flash');
 const passportSetup = require ('./passport/serializers');
 
 mongoose
-  .connect (process.env.remindertool_db, {useNewUrlParser: true})
+  .connect (process.env.MONGO_URI, {useNewUrlParser: true})
   .then (x => {
     console.log (
       `Connected to Mongo! Database name: "${x.connections[0].name}"`
