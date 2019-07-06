@@ -11,6 +11,8 @@ const bcryptSalt = 10;
 
 mongoose
   .connect ('mongodb://localhost/remindertool', {useNewUrlParser: true})
+  // .connect ('mongodb://localhost/remindertool', {useNewUrlParser: true})
+  // remindertool_db
   .then (x => {
     console.log (
       `Connected to Mongo! Database name: "${x.connections[0].name}"`
@@ -21,13 +23,21 @@ mongoose
   });
 
 let users = [
+  // {
+  //   typeOfUser: 'USER',
+  //   first_name: '13',
+  //   email_address: '13@13.ee',
+  //   password: bcrypt.hashSync ('13', bcrypt.genSaltSync (bcryptSalt)),
+  //   phone_number: '651238929',
+  //   premium: 'No',
+  // },
   {
-    email_address: 'alice',
-    password: bcrypt.hashSync ('alice', bcrypt.genSaltSync (bcryptSalt)),
-  },
-  {
-    email_address: 'bob',
-    password: bcrypt.hashSync ('bob', bcrypt.genSaltSync (bcryptSalt)),
+    typeOfUser: 'ADMIN',
+    first_name: 'merle',
+    email_address: 'merlevanjanse@gmail.com',
+    password: bcrypt.hashSync ('merle', bcrypt.genSaltSync (bcryptSalt)),
+    phone_number: '651238929',
+    premium: 'Yes',
   },
 ];
 

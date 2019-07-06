@@ -16,9 +16,9 @@ router.get ('/', (req, res, next) => {
     });
 });
 
-// Upgrade to Premium: premium = true
+// Upgrade to Premium: premium = 'Yes'
 router.get ('/upgrade', (req, res, next) => {
-  User.updateOne ({_id: req.query.id}, {$set: {premium: true}})
+  User.updateOne ({_id: req.query.id}, {$set: {premium: 'Yes'}})
     .then (all => {
       console.log (all);
       res.json (all);

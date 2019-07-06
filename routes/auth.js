@@ -26,10 +26,11 @@ router.post ('/signup', (req, res, next) => {
     email_address === '' ||
     password === '' ||
     phone_number === '' ||
+    premium === '' ||
     first_name === ''
   ) {
     res.status (400).json ({
-      message: "email address, password or phone number can't be empty",
+      message: "email address,phone number, premium or password can't be empty",
     });
     return;
   }

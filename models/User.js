@@ -7,7 +7,7 @@ const userSchema = new Schema (
     email_address: String,
     phone_number: String,
     password: String,
-    premium: Boolean,
+    premium: {type: String, enum: ['Yes', 'No'], default: 'No'},
     notification: {type: String, enum: ['MAIL', 'SMS']},
     typeOfUser: {type: String, enum: ['ADMIN', 'USER'], default: 'USER'},
     selectedDay: Date,

@@ -1,5 +1,6 @@
 require ('dotenv').config ();
 
+// node twilio/scheduler.run()
 const mongoose = require ('mongoose');
 const Schema = mongoose.Schema;
 const moment = require ('moment');
@@ -19,7 +20,7 @@ const remindersSchema = new Schema (
     timeZone: String,
     text: String,
     gridRadios: String,
-    userId: {type: Schema.Types.ObjectId, ref: 'User'}, // is it necessary here also  ?
+    userId: {type: Schema.Types.ObjectId, ref: 'User'},
   },
   {
     timestamps: {
@@ -65,10 +66,10 @@ remindersSchema.statics.sendNotifications = function (callback) {
     reminders.forEach (function (reminder) {
       // Create options to send the message
       const options = {
-        to: `+ ${reminder.phoneNumber}`,
+        to: ` ${reminder.phone_number}`,
         from: cfg.twilioPhoneNumber,
         /* eslint-disable max-len */
-        body: `Hi ${reminder.name}. Just a reminder that you have an reminder coming up.`,
+        body: `${reminder.text}`,
         /* eslint-enable max-len */
       };
 

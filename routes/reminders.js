@@ -65,7 +65,7 @@ router.get ('/selectedday', (req, res, next) => {
     });
 });
 
-//DELETE
+//DELETE REMINDER
 router.get ('/delete', (req, res) => {
   console.log ('Loggigng delete route', {_id: req.query.id});
 
