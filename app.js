@@ -79,12 +79,12 @@ app.use (flash ());
 require ('./passport') (app);
 
 // cors
-app.use (
-  cors ({
-    origin: ['http://localhost:3000'],
-    credentials: true,
-  })
-);
+// app.use (
+//   cors ({
+//     origin: ['http://localhost:3000'],
+//     credentials: true,
+//   })
+// );
 
 const index = require ('./routes/index');
 app.use ('/', index);
