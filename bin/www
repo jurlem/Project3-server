@@ -4,7 +4,7 @@ const http = require ('http');
 
 let app = require ('../app');
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 6001;
 
 // catch 404 and render a not-found.hbs template
 app.use ((req, res, next) => {
